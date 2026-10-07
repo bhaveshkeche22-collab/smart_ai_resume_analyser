@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Study Material | Learning Hub{% endblock %}
+
+{% block extra_css %}
+<style>
+.learning-page{background:#f7f9fc;min-height:calc(100vh - 80px);padding:42px 0 70px}
+.hero-box{background:linear-gradient(135deg,#0f172a,#7c3aed);color:#fff;border-radius:24px;padding:38px;margin-bottom:30px}
+.hero-box p{color:#e9d5ff;max-width:760px}.subject-card{background:#fff;border:1px solid #e8edf5;border-radius:20px;padding:24px;height:100%;box-shadow:0 10px 28px rgba(15,23,42,.06)}
+.subject-icon{width:54px;height:54px;border-radius:15px;background:#f5f3ff;color:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px}
+.subject-card h3{font-size:20px;font-weight:750}.subject-card p{color:#64748b}.topic{background:#f8fafc;border:1px solid #edf2f7;border-radius:12px;padding:12px;margin-top:10px}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="learning-page">
+<div class="container">
+  <div class="hero-box">
+    <span class="badge bg-light text-primary mb-3">STUDY MATERIAL</span>
+    <h1 class="fw-bold">Learn the skills behind your career</h1>
+    <p class="mb-0">Explore subjects and their topics from your Learning Hub.</p>
+  </div>
+
+  {% if selected_subject %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div><h2 class="fw-bold mb-1">{{ selected_subject.name }}</h2><p class="text-secondary mb-0">{{ selected_subject.description or "" }}</p></div>
+      <a href="{{ url_for('learning.study') }}" class="btn btn-outline-primary">All Subjects</a>
+    </div>
+
+    <div class="row g-3">
+      {% for topic in selected_subject.topics|sort(attribute='order_number') %}
+      <div class="col-md-6">
+        <div class="topic">
+          <div class="fw-semibold">{{ topic.title }}</div>
+          {% if topic.description %}<div class="text-secondary small mt-1">{{ topic.description }}</div>{% endif %}
+        </div>
+      {% else %}
+      <div class="col-12"><div class="alert alert-info">No topics have been added to this subject yet.</div></div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="row g-4">
+      {% for subject in subjects %}
+      <div class="col-md-6 col-xl-4">
+        <div class="subject-card">
+          <div class="subject-icon"><i class="bi {{ subject.icon or 'bi-book' }}"></i></div>
+          <h3>{{ subject.name }}</h3>
+          <p>{{ subject.description or "Study important concepts and topics for this subject." }}</p>
+          <div class="small text-muted mb-3"><i class="bi bi-list-check me-1"></i>{{ subject.topics|length }} topics</div>
+          <a href="{{ url_for('learning.subject_detail', subject_id=subject.id) }}" class="btn btn-outline-primary w-100">Explore Subject <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+      </div>
+      {% else %}
+      <div class="col-12"><div class="alert alert-info">No study subjects are available yet. Add StudySubject records to your database.</div></div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block title %}DSA Sheet | Learning Hub{% endblock %}
+
+{% block extra_css %}
+<style>
+.dsa-page{background:#f7f9fc;min-height:calc(100vh - 80px);padding:38px 0 70px}
+.dsa-hero{background:linear-gradient(135deg,#111827,#2563eb);color:#fff;border-radius:24px;padding:34px;margin-bottom:24px}
+.dsa-hero p{color:#dbeafe;max-width:760px}
+.filter-box,.problem-card{background:#fff;border:1px solid #e5eaf2;border-radius:18px;box-shadow:0 8px 25px rgba(15,23,42,.05)}
+.filter-box{padding:18px;margin-bottom:20px}
+.problem-card{padding:20px;margin-bottom:12px;transition:.18s}
+.problem-card:hover{box-shadow:0 12px 30px rgba(15,23,42,.09);transform:translateY(-2px)}
+.day-pill{display:inline-flex;padding:5px 10px;border-radius:999px;background:#eff6ff;color:#2563eb;font-size:12px;font-weight:700}
+.diff{display:inline-flex;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.easy{background:#ecfdf5;color:#047857}.medium{background:#fffbeb;color:#b45309}.hard{background:#fef2f2;color:#b91c1c}
+.action-btn{min-width:88px}.empty{padding:60px 20px;text-align:center}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dsa-page">
+<div class="container">
+  <div class="dsa-hero">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <span class="badge bg-light text-primary mb-2">DSA SHEET</span>
+        <h1 class="fw-bold mb-2">Master Data Structures & Algorithms</h1>
+        <p class="mb-0">Follow the problem sheet day by day. Track status, save important problems, and practice consistently.</p>
+      </div>
+      <a href="{{ url_for('learning.progress') }}" class="btn btn-light"><i class="bi bi-bar-chart me-1"></i> My Progress</a>
+    </div>
+  </div>
+
+  <div class="filter-box">
+    <form method="get" action="{{ url_for('learning.dsa') }}" class="row g-2">
+      <div class="col-lg-5">
+        <input class="form-control" name="search" value="{{ current_search }}" placeholder="Search problem...">
+      </div>
+      <div class="col-md-4 col-lg-3">
+        <select class="form-select" name="difficulty">
+          <option value="">All Difficulty</option>
+          <option value="Easy" {% if current_difficulty|lower == 'easy' %}selected{% endif %}>Easy</option>
+          <option value="Medium" {% if current_difficulty|lower == 'medium' %}selected{% endif %}>Medium</option>
+          <option value="Hard" {% if current_difficulty|lower == 'hard' %}selected{% endif %}>Hard</option>
+        </select>
+      </div>
+      <div class="col-md-4 col-lg-3">
+        <select class="form-select" name="topic">
+          <option value="">All Topics</option>
+          {% for t in topics %}
+            <option value="{{ t }}" {% if current_topic == t %}selected{% endif %}>{{ t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4 col-lg-1 d-grid">
+        <button class="btn btn-primary"><i class="bi bi-search"></i></button>
+      </div>
+    </form>
+  </div>
+
+  {% for problem in problems %}
+  {% set row = progress_map.get(problem.id) %}
+  <div class="problem-card">
+    <div class="row align-items-center g-3">
+      <div class="col-lg-6">
+        <div class="mb-2">
+          <span class="day-pill">Day {{ problem.day_number }}</span>
+          {% if problem.difficulty %}
+            <span class="diff {% if problem.difficulty|lower == 'easy' %}easy{% elif problem.difficulty|lower == 'medium' %}medium{% else %}hard{% endif %} ms-1">{{ problem.difficulty }}</span>
+          {% endif %}
+        </div>
+        <h3 class="h5 fw-bold mb-1">{{ problem.title }}</h3>
+        {% if problem.topic %}<div class="text-secondary small">{{ problem.topic }}</div>{% endif %}
+      </div>
+
+      <div class="col-lg-2">
+        {% if problem.estimated_time %}
+          <span class="text-secondary small"><i class="bi bi-clock me-1"></i>{{ problem.estimated_time }}</span>
+        {% endif %}
+      </div>
+
+      <div class="col-lg-4">
+        <div class="d-flex flex-wrap justify-content-lg-end gap-2">
+          {% if problem.article_url %}
+          <a href="{{ problem.article_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary action-btn"><i class="bi bi-file-text me-1"></i>Article</a>
+          {% endif %}
+          {% if problem.youtube_url %}
+          <a href="{{ problem.youtube_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-danger action-btn"><i class="bi bi-youtube me-1"></i>Video</a>
+          {% endif %}
+          {% if problem.practice_url %}
+          <a href="{{ problem.practice_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-primary action-btn"><i class="bi bi-code-square me-1"></i>Practice</a>
+          {% endif %}
+
+          <button type="button" class="btn btn-sm {% if row and row.saved %}btn-warning{% else %}btn-outline-warning{% endif %} save-btn"
+                  data-url="{{ url_for('learning.save_dsa', problem_id=problem.id) }}">
+            <i class="bi bi-bookmark{% if row and row.saved %}-fill{% endif %}"></i>
+          </button>
+
+          <select class="form-select form-select-sm status-select" style="width:145px"
+                  data-url="{{ url_for('learning.update_dsa_status', problem_id=problem.id) }}">
+            {% set current_status = row.status if row else 'not_started' %}
+            <option value="not_started" {% if current_status == 'not_started' %}selected{% endif %}>Not Started</option>
+            <option value="in_progress" {% if current_status == 'in_progress' %}selected{% endif %}>In Progress</option>
+            <option value="completed" {% if current_status == 'completed' %}selected{% endif %}>Completed</option>
+            <option value="revision" {% if current_status == 'revision' %}selected{% endif %}>Revision</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="empty bg-white border rounded-4">
+    <i class="bi bi-database-x fs-1 text-primary"></i>
+    <h3 class="fw-bold mt-3">DSA sheet is empty</h3>
+    <p class="text-secondary mb-0">The DSA page is connected correctly, but no DSAProblem records have been imported into the database yet.</p>
+  </div>
+  {% endfor %}
+
+  {% if pagination and pagination.pages > 1 %}
+  <nav class="mt-4">
+    <ul class="pagination justify-content-center">
+      {% for page_num in pagination.iter_pages() %}
+        {% if page_num %}
+          <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+            <a class="page-link" href="{{ url_for('learning.dsa', page=page_num, search=current_search, difficulty=current_difficulty, topic=current_topic) }}">{{ page_num }}</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">…</span></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </nav>
+  {% endif %}
+</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll(".status-select").forEach(select => {
+  select.addEventListener("change", async () => {
+    const form = new FormData();
+    form.append("status", select.value);
+    try {
+      const response = await fetch(select.dataset.url, {method:"POST", body:form});
+      const data = await response.json();
+      if (!data.success) alert(data.message || "Unable to update status.");
+    } catch(e) {
+      alert("Unable to update status.");
+    }
+  });
+});
+
+document.querySelectorAll(".save-btn").forEach(button => {
+  button.addEventListener("click", async () => {
+    try {
+      const response = await fetch(button.dataset.url, {method:"POST"});
+      const data = await response.json();
+      if (!data.success) return;
+      button.classList.toggle("btn-warning", data.saved);
+      button.classList.toggle("btn-outline-warning", !data.saved);
+      button.innerHTML = data.saved
+        ? '<i class="bi bi-bookmark-fill"></i>'
+        : '<i class="bi bi-bookmark"></i>';
+    } catch(e) {
+      alert("Unable to save problem.");
+    }
+  });
+});
+</script>
+{% endblock %}

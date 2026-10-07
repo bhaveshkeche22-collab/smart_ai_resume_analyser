@@ -1,0 +1,402 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard | AI Resume Analyser
+{% endblock %}
+
+{% block content %}
+
+<main class="container py-5">
+
+<section class="dashboard-heading">
+        <div>
+            <span class="dashboard-label">RESUME ANALYZER</span>
+            <h1>Resume Analysis Dashboard</h1>
+            <p>Upload your resume, select a target job, and measure your resume-to-job match.</p>
+        </div>
+        <div class="dashboard-date"><i class="bi bi-stars"></i> AI-Powered Analysis</div>
+    </section>
+
+    <section class="row g-4 mt-2">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-top"><div class="stat-icon ats-icon"><i class="bi bi-speedometer2"></i></div><span id="atsStatus" class="stat-status">Not analyzed</span></div>
+                <div class="stat-title">ATS Score</div>
+                <div class="stat-value" id="atsScoreValue">--</div>
+                <div class="stat-description">Weighted resume compatibility score</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-top"><div class="stat-icon match-icon"><i class="bi bi-bullseye"></i></div><span id="matchStatus" class="stat-status">Not analyzed</span></div>
+                <div class="stat-title">Skill Match</div>
+                <div class="stat-value" id="skillMatchValue">--</div>
+                <div class="stat-description">Required skills found in your resume</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-top"><div class="stat-icon similarity-icon"><i class="bi bi-graph-up-arrow"></i></div><span id="similarityStatus" class="stat-status">Not analyzed</span></div>
+                <div class="stat-title">Similarity</div>
+                <div class="stat-value" id="similarityValue">--</div>
+                <div class="stat-description">TF-IDF + cosine similarity</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-top"><div class="stat-icon quality-icon"><i class="bi bi-shield-check"></i></div><span id="qualityStatus" class="stat-status">Not analyzed</span></div>
+                <div class="stat-title">Resume Quality</div>
+                <div class="stat-value" id="qualityValue">--</div>
+                <div class="stat-description">Profile completeness check</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="upload-section mt-5">
+        <div class="section-heading">
+            <div><span class="dashboard-label">STEP 1</span><h2>Upload Your Resume</h2><p>Upload a PDF resume. The backend extracts your profile, education, experience, projects, and skills.</p></div>
+        </div>
+        <div class="upload-card" id="uploadCard">
+            <input type="file" id="resumeFile" accept="application/pdf" hidden>
+            <div class="upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+            <h4>Drag & Drop Your Resume</h4>
+            <p>or choose a PDF from your computer</p>
+            <button type="button" class="btn btn-primary btn-sm" id="chooseFileButton"><i class="bi bi-file-earmark-pdf"></i> Choose PDF</button>
+            <div id="selectedFile" class="mt-3"></div>
+            <small class="text-muted">PDF only • Text-based PDFs work best</small>
+        </div>
+    </section>
+
+    <section class="job-section mt-5">
+        <div class="section-heading"><div><span class="dashboard-label">STEP 2</span><h2>Select Target Job</h2><p>Enter the job description used for skill matching and ATS scoring.</p></div></div>
+        <div class="job-card">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <label class="form-label">Job Role</label>
+                    <select class="form-select" id="jobRole">
+                        <option value="">Select a job role</option>
+                        <option value="Software Engineer">Software Engineer</option>
+                        <option value="Frontend Developer">Frontend Developer</option>
+                        <option value="Backend Developer">Backend Developer</option>
+                        <option value="Data Scientist">Data Scientist</option>
+                        <option value="Machine Learning Engineer">Machine Learning Engineer</option>
+                        <option value="Data Analyst">Data Analyst</option>
+                        <option value="Full Stack Developer">Full Stack Developer</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Experience Level</label>
+                    <select class="form-select" id="experienceLevel">
+                        <option value="">Select experience</option>
+                        <option value="Fresher">Fresher</option>
+                        <option value="Entry Level">Entry Level</option>
+                        <option value="Mid Level">Mid Level</option>
+                        <option value="Senior Level">Senior Level</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap">
+                        <label class="form-label mb-0">Job Description</label>
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="loadJobTemplate">Use sample JD for selected role</button>
+                    </div>
+                    <textarea id="jobDescription" class="form-control mt-2" rows="7" placeholder="Paste the complete job description here..."></textarea>
+                    <div class="character-count"><span id="charCount">0</span> characters</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="profile-section mt-5" id="profileSection" style="display:none;">
+        <div class="section-heading"><div><span class="dashboard-label">EXTRACTED PROFILE</span><h2>Resume Information</h2><p>Information extracted from the uploaded PDF.</p></div></div>
+        <div class="profile-card">
+            <div class="row g-4">
+                <div class="col-md-6"><div class="profile-item"><span><i class="bi bi-person"></i> Name</span><strong id="profileName">—</strong></div></div>
+                <div class="col-md-6"><div class="profile-item"><span><i class="bi bi-envelope"></i> Email</span><strong id="profileEmail">—</strong></div></div>
+                <div class="col-md-6"><div class="profile-item"><span><i class="bi bi-telephone"></i> Phone</span><strong id="profilePhone">—</strong></div></div>
+                <div class="col-md-6"><div class="profile-item profile-long"><span><i class="bi bi-mortarboard"></i> Education</span><strong id="profileEducation">—</strong></div></div>
+                <div class="col-12"><div class="profile-item profile-long"><span><i class="bi bi-briefcase"></i> Experience</span><div id="profileExperience">—</div></div></div>
+                <div class="col-12"><div class="profile-item profile-long"><span><i class="bi bi-kanban"></i> Projects</span><div id="profileProjects">—</div></div></div>
+                <div class="col-12"><div class="profile-item"><span><i class="bi bi-code-slash"></i> Extracted Skills</span><div id="profileSkills" class="skill-container"></div></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="analysis-action mt-5">
+        <div class="analysis-action-card">
+            <div><div class="analysis-icon"><i class="bi bi-stars"></i></div><h3>Ready to Analyze?</h3><p>Upload the resume and provide the target job description. The system will calculate ATS, skill match, semantic similarity, gaps, and recommendations.</p></div>
+            <button type="button" class="btn btn-primary btn-lg" id="analyzeButton"><i class="bi bi-magic"></i> Analyze Resume</button>
+        </div>
+    </section>
+
+    <section class="ats-results-section mt-5" id="atsResultsSection" style="display:none;">
+        <div class="section-heading"><div><span class="dashboard-label">STEP 3</span><h2>ATS Analysis Results</h2><p id="resultSummary">Detailed comparison between your resume and the selected job.</p></div></div>
+        <div class="ats-result-card">
+            <div class="ats-result-top">
+                <div><span class="dashboard-label">TARGET JOB</span><h3 id="resultJobTitle">Selected Job</h3><p id="resultExperience">—</p></div>
+               <div class="ats-result-circle" id="atsResultCircle">
+    <div class="ats-circle-content">
+        <strong id="atsResultScore">0</strong>
+        <span>/100</span>
+    </div>
+</div>
+            </div>
+            <!-- =========================================================
+     PROFILE + RECOMMENDED JOBS
+========================================================= -->
+
+<section class="career-section" id="careerExplorer">
+
+    <!-- PROFILE CARD -->
+    <div class="profile-card">
+
+        <div class="profile-avatar" id="profileAvatar">
+            B
+        </div>
+
+        <div class="profile-info">
+
+            <span class="profile-label">
+                YOUR RESUME PROFILE
+            </span>
+
+            <h2 id="profileName">
+                Resume Profile
+            </h2>
+
+            <p id="profileEmail">
+                Upload your resume to build your profile.
+            </p>
+
+            <div
+                class="profile-skills"
+                id="profileSkills">
+            </div>
+
+        </div>
+
+        <div class="profile-status">
+
+            <span class="status-dot"></span>
+
+            <span>
+                Resume analyzed
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- RECOMMENDED JOBS -->
+
+    <div class="recommended-header">
+
+        <div>
+
+            <span class="section-kicker">
+                CAREER MATCH
+            </span>
+
+            <h2>
+                Recommended Jobs For You
+            </h2>
+
+            <p>
+                Jobs related to your resume skills and experience.
+            </p>
+
+        </div>
+
+        <button
+            type="button"
+            class="refresh-jobs-btn"
+            onclick="generateRecommendedJobs()">
+
+            ↻ Refresh
+
+        </button>
+
+    </div>
+
+
+    <!-- LOADING -->
+
+    <div
+        id="recommendedJobsLoading"
+        class="jobs-loading"
+        style="display:none;">
+
+        <div class="loading-spinner"></div>
+
+        <span>
+            Finding jobs related to your profile...
+        </span>
+
+    </div>
+
+
+    <!-- JOB CARDS -->
+
+    <div
+        id="recommendedJobs"
+        class="recommended-jobs-grid">
+
+        <div class="jobs-empty">
+
+            <div class="jobs-empty-icon">
+                ✨
+            </div>
+
+            <h3>
+                Your recommendations will appear here
+            </h3>
+
+            <p>
+                Upload and analyze your resume to discover
+                relevant job roles.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+            <div class="row g-3 mt-3">
+                <div class="col-md-4"><div class="analysis-metric-card"><span>ATS Score</span><strong id="resultAtsScore">0%</strong></div></div>
+
+                <div class="col-md-4"><div class="analysis-metric-card"><span>Skill Match</span><strong id="resultSkillMatch">0%</strong></div></div>
+                <div class="col-md-4"><div class="analysis-metric-card"><span>TF-IDF Similarity</span><strong id="resultSimilarity">0%</strong></div></div>
+            </div>
+            <div class="row g-3 mt-2">
+                <div class="col-md-3"><div class="analysis-metric-card"><span>Education</span><strong id="resultEducation">0%</strong></div></div>
+                <div class="col-md-3"><div class="analysis-metric-card"><span>Projects</span><strong id="resultProjects">0%</strong></div></div>
+                <div class="col-md-3"><div class="analysis-metric-card"><span>Experience</span><strong id="resultExperienceScore">0%</strong></div></div>
+                <div class="col-md-3"><div class="analysis-metric-card"><span>Keywords</span><strong id="resultKeywords">0%</strong></div></div>
+                <div class="col-md-3"><div class="analysis-metric-card"><span>Resume Quality</span><strong id="resultQuality">0%</strong></div></div>
+            </div>
+            <div class="row g-4 mt-2">
+                <div class="col-md-6"><div class="analysis-skills-card matched-card"><h4><i class="bi bi-check-circle"></i> Matched Skills</h4><div id="matchedSkills" class="result-skill-badges"></div></div></div>
+                <div class="col-md-6"><div class="analysis-skills-card missing-card"><h4><i class="bi bi-exclamation-circle"></i> Missing Skills</h4><div id="missingSkills" class="result-skill-badges"></div></div></div>
+            </div>
+            <div class="recommendation-box mt-4"><h4><i class="bi bi-stars"></i> Recommendation</h4><p id="resultRecommendation">—</p><ul id="resultSuggestions"></ul><small id="recommendationProvider" class="text-muted"></small></div>
+        </div>
+    </section>
+    <!-- =====================================================
+     AI RESUME IMPROVEMENT STUDIO
+===================================================== -->
+
+<section
+    id="improvementStudio"
+    class="improvement-studio mt-4"
+>
+
+    <div class="studio-header">
+
+        <div>
+
+            <span class="studio-label">
+                AI RESUME IMPROVEMENT STUDIO
+            </span>
+
+            <h3>
+                Missing Evidence Detector
+            </h3>
+
+            <p>
+                Check whether missing job skills have
+                real evidence in your resume.
+            </p>
+
+        </div>
+
+        <button
+            id="checkEvidenceBtn"
+            class="btn btn-primary"
+            type="button"
+        >
+            <i class="bi bi-shield-check"></i>
+
+            Check Evidence
+        </button>
+
+    </div>
+
+
+    <!-- Loading -->
+
+    <div
+        id="evidenceLoading"
+        class="evidence-loading"
+        style="display:none;"
+    >
+
+        <div
+            class="spinner-border"
+            role="status"
+        ></div>
+
+        <span>
+            Checking your resume evidence...
+        </span>
+
+    </div>
+
+
+    <!-- Results -->
+
+    <div
+        id="evidenceResults"
+        class="evidence-grid"
+    >
+
+    </div>
+
+</section>
+<!-- ================= RECOMMENDED JOBS ================= -->
+<section class="recommended-jobs-section" id="recommendedJobsSection">
+
+    <div class="section-header">
+        <div>
+            <span class="section-badge">AI MATCH</span>
+            <h2>Recommended Jobs</h2>
+            <p>
+                Jobs matched with your resume skills, experience and target role.
+            </p>
+        </div>
+
+        <button class="refresh-jobs-btn" onclick="loadRecommendedJobs()">
+            ↻ Refresh
+        </button>
+    </div>
+
+    <div id="recommendedJobsLoading" class="jobs-loading">
+        <div class="loading-spinner"></div>
+        <span>Finding jobs matching your profile...</span>
+    </div>
+
+    <div id="recommendedJobsEmpty" class="jobs-empty" style="display:none;">
+        <div class="empty-icon">💼</div>
+        <h3>No recommendations yet</h3>
+        <p>
+            Upload and analyze your resume to get personalized job recommendations.
+        </p>
+    </div>
+
+    <div id="recommendedJobsGrid" class="recommended-jobs-grid">
+        <!-- Jobs will be inserted here by dashboard.js -->
+    </div>
+
+</section>
+
+    <section class="recent-section mt-5">
+        <div class="section-heading"><div><span class="dashboard-label">HISTORY</span><h2>Recent Analyses</h2><p>Your latest completed ATS reports.</p></div></div>
+        <div class="recent-card" id="historyContainer"><div class="empty-history"><div class="history-icon"><i class="bi bi-clock-history"></i></div><h4>No analyses yet</h4><p>Your completed analyses will appear here.</p></div></div>
+    </section>
+
+</main>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,1 @@
+from services.resume_extractor import extract_resume_information

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}My Progress | Learning Hub{% endblock %}
+
+{% block extra_css %}
+<style>
+.learning-page{background:#f7f9fc;min-height:calc(100vh - 80px);padding:42px 0 70px}
+.hero-box{background:linear-gradient(135deg,#172554,#2563eb);color:#fff;border-radius:24px;padding:38px;margin-bottom:30px}
+.hero-box p{color:#dbeafe}.stat-card{background:#fff;border:1px solid #e8edf5;border-radius:20px;padding:24px;height:100%;box-shadow:0 10px 28px rgba(15,23,42,.06)}
+.stat-icon{width:48px;height:48px;border-radius:14px;background:#eff6ff;color:#2563eb;display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:15px}
+.stat-number{font-size:32px;font-weight:800}.progress-wrap{background:#fff;border:1px solid #e8edf5;border-radius:22px;padding:28px;box-shadow:0 10px 28px rgba(15,23,42,.06)}
+.progress{height:14px;border-radius:20px;background:#e5e7eb}.progress-bar{border-radius:20px}
+.quick{display:flex;gap:12px;flex-wrap:wrap}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="learning-page">
+<div class="container">
+  <div class="hero-box">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <span class="badge bg-light text-primary mb-3">MY LEARNING</span>
+        <h1 class="fw-bold">Track your progress</h1>
+        <p class="mb-0">Keep working through your DSA problems and build consistent learning progress.</p>
+      </div>
+      <a href="{{ url_for('learning.dsa') }}" class="btn btn-light"><i class="bi bi-code-slash me-1"></i> Continue DSA</a>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-6 col-xl-3"><div class="stat-card"><div class="stat-icon"><i class="bi bi-collection"></i></div><div class="stat-number">{{ total }}</div><div class="text-secondary">Total DSA Problems</div></div></div>
+    <div class="col-6 col-xl-3"><div class="stat-card"><div class="stat-icon"><i class="bi bi-check2-circle"></i></div><div class="stat-number">{{ completed }}</div><div class="text-secondary">Completed</div></div></div>
+    <div class="col-6 col-xl-3"><div class="stat-card"><div class="stat-icon"><i class="bi bi-bookmark-heart"></i></div><div class="stat-number">{{ saved }}</div><div class="text-secondary">Saved</div></div></div>
+    <div class="col-6 col-xl-3"><div class="stat-card"><div class="stat-icon"><i class="bi bi-play-circle"></i></div><div class="stat-number">{{ in_progress }}</div><div class="text-secondary">In Progress</div></div></div>
+  </div>
+
+  <div class="progress-wrap mb-4">
+    <div class="d-flex justify-content-between align-items-end mb-3">
+      <div><h3 class="fw-bold mb-1">DSA completion</h3><p class="text-secondary mb-0">Your completed problems compared with the full DSA sheet.</p></div>
+      <strong class="fs-3">{{ percentage }}%</strong>
+    </div>
+    <div class="progress">
+      <div class="progress-bar bg-primary" role="progressbar" style="width: {{ percentage }}%" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    {% if total == 0 %}
+      <div class="alert alert-info mt-4 mb-0">No DSA problems have been imported yet.</div>
+    {% elif completed == 0 %}
+      <p class="text-secondary small mt-3 mb-0">Start your first problem from the DSA Sheet.</p>
+    {% else %}
+      <p class="text-secondary small mt-3 mb-0">{{ completed }} of {{ total }} problems completed.</p>
+    {% endif %}
+  </div>
+
+  <div class="quick">
+    <a class="btn btn-primary" href="{{ url_for('learning.dsa') }}"><i class="bi bi-code-slash me-1"></i> Open DSA Sheet</a>
+    <a class="btn btn-outline-primary" href="{{ url_for('learning.roadmaps') }}"><i class="bi bi-signpost-2 me-1"></i> Career Roadmaps</a>
+    <a class="btn btn-outline-primary" href="{{ url_for('learning.study') }}"><i class="bi bi-book me-1"></i> Study Material</a>
+  </div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,661 @@
+{% extends "base.html" %}
+
+{% block title %}
+AI Resume Analyser | Scan. Score. Stand out.
+{% endblock %}
+
+{% block content %}
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+    <div class="container">
+
+        <div class="row align-items-center">
+
+            <div class="col-lg-7 hero-content">
+
+                <div class="hero-badge">
+                    <i class="bi bi-stars"></i>
+                    AI-Powered Resume Intelligence
+                </div>
+
+                <h1 class="hero-title">
+                    Turn your resume into your
+                    <span>career advantage.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Analyze your resume against job requirements,
+                    discover skill gaps, understand your ATS score,
+                    and receive actionable AI-powered recommendations.
+                </p>
+
+                <div class="hero-buttons">
+
+                    <a
+                        href="{{ url_for('auth.login') }}"
+                        class="btn primary-btn"
+                    >
+                        <i class="bi bi-file-earmark-arrow-up me-2"></i>
+                        Analyze My Resume
+                    </a>
+
+                    <a
+                        href="#workflow"
+                        class="btn secondary-btn"
+                    >
+                        <i class="bi bi-play-circle me-2"></i>
+                        See How It Works
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-5">
+
+                <div class="preview-wrapper">
+
+                    <div class="preview-card">
+
+                        <div class="preview-top">
+
+                            <div>
+                                <h5 class="preview-title">
+                                    Resume Analysis
+                                </h5>
+
+                                <small class="text-muted">
+                                    AI analysis preview
+                                </small>
+                            </div>
+
+                            <span class="online"></span>
+
+                        </div>
+
+                        <div class="score-area">
+
+                            <div>
+                                <div class="score-label">
+                                    ATS SCORE
+                                </div>
+
+                                <div class="score-number">
+                                    87%
+                                </div>
+
+                                <small class="text-success fw-bold">
+                                    Strong match
+                                </small>
+                            </div>
+
+                            <i
+                                class="bi bi-bar-chart-line-fill"
+                                style="font-size:55px;color:#7568e8"
+                            ></i>
+
+                        </div>
+
+                        <div class="mini-row">
+                            <span>
+                                <i class="bi bi-check-circle text-success me-2"></i>
+                                Skills matched
+                            </span>
+
+                            <span class="mini-value">18</span>
+                        </div>
+
+                        <div class="mini-row">
+                            <span>
+                                <i class="bi bi-briefcase text-primary me-2"></i>
+                                Job match
+                            </span>
+
+                            <span class="mini-value">91%</span>
+                        </div>
+
+                        <div class="mini-row">
+                            <span>
+                                <i class="bi bi-exclamation-circle text-warning me-2"></i>
+                                Skill gaps
+                            </span>
+
+                            <span class="mini-value">4</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= ABOUT ================= -->
+
+<section class="section" id="about">
+
+    <div class="container">
+
+        <div class="text-center">
+
+            <span class="section-label">
+                ABOUT THE PROJECT
+            </span>
+
+            <h2 class="section-title">
+                Resume analysis made understandable
+            </h2>
+
+            <p class="section-description">
+                AI Resume Analyser combines resume extraction,
+                ATS scoring, keyword matching, similarity analysis
+                and AI recommendations into one workflow.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= MODULES ================= -->
+
+<section class="section bg-light" id="modules">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+
+            <span class="section-label">
+                PLATFORM MODULES
+            </span>
+
+            <h2 class="section-title">
+                Everything in one workspace
+            </h2>
+
+            <p class="section-description">
+                Explore the modules that transform a resume into
+                useful career insights.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="module-card">
+
+                    <div class="module-icon">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+
+                    <h5>Resume Analyzer</h5>
+
+                    <p>
+                        Extract resume information including skills,
+                        education, projects and experience.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="module-card">
+
+                    <div class="module-icon">
+                        <i class="bi bi-speedometer2"></i>
+                    </div>
+
+                    <h5>ATS Analysis</h5>
+
+                    <p>
+                        Calculate ATS compatibility using skills,
+                        keywords, projects, education and experience.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="module-card">
+
+                    <div class="module-icon">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+
+                    <h5>Job Match</h5>
+
+                    <p>
+                        Compare your resume skills with job requirements
+                        and discover suitable roles.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="module-card">
+
+                    <div class="module-icon">
+                        <i class="bi bi-bar-chart"></i>
+                    </div>
+
+                    <h5>Skill Gap</h5>
+
+                    <p>
+                        Identify missing skills and understand which
+                        capabilities may need improvement.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="module-card">
+
+                    <div class="module-icon">
+                        <i class="bi bi-stars"></i>
+                    </div>
+
+                    <h5>AI Recommendations</h5>
+
+                    <p>
+                        Generate actionable recommendations for improving
+                        resume content and job alignment.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="module-card">
+
+                    <div class="module-icon">
+                        <i class="bi bi-person-circle"></i>
+                    </div>
+
+                    <h5>Profile & History</h5>
+
+                    <p>
+                        Manage your profile, resumes and previous
+                        resume analysis results.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= WORKFLOW ================= -->
+
+<section class="section" id="workflow">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+
+            <span class="section-label">
+                HOW IT WORKS
+            </span>
+
+            <h2 class="section-title">
+                From resume to insights
+            </h2>
+
+            <p class="section-description">
+                Follow a simple workflow to understand and improve
+                your resume.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <div class="col-md-6 col-lg">
+
+                <div class="workflow-card">
+
+                    <div class="step">01</div>
+
+                    <h5>Upload</h5>
+
+                    <p>
+                        Upload your PDF resume securely.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg">
+
+                <div class="workflow-card">
+
+                    <div class="step">02</div>
+
+                    <h5>Extract</h5>
+
+                    <p>
+                        The system extracts important resume information.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg">
+
+                <div class="workflow-card">
+
+                    <div class="step">03</div>
+
+                    <h5>Analyze</h5>
+
+                    <p>
+                        ATS, keywords, skills and similarity are calculated.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg">
+
+                <div class="workflow-card">
+
+                    <div class="step">04</div>
+
+                    <h5>Compare</h5>
+
+                    <p>
+                        Your profile is compared with job requirements.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg">
+
+                <div class="workflow-card">
+
+                    <div class="step">05</div>
+
+                    <h5>Improve</h5>
+
+                    <p>
+                        Receive recommendations and identify skill gaps.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= QUICK UPLOAD ================= -->
+
+<section class="section upload-section">
+
+    <div class="container">
+
+        <div class="text-center">
+
+            <span class="section-label">
+                GET STARTED
+            </span>
+
+            <h2 class="section-title">
+                Ready to analyze your resume?
+            </h2>
+
+            <p class="section-description">
+                Start with your latest PDF resume and explore your
+                personalized analysis.
+            </p>
+
+        </div>
+
+
+        <div
+            class="upload-box"
+            id="uploadBox"
+        >
+
+            <div class="upload-icon">
+                <i class="bi bi-cloud-arrow-up"></i>
+            </div>
+
+            <h4>
+                Drop your resume here
+            </h4>
+
+            <p>
+                PDF files only
+            </p>
+
+            <input
+                type="file"
+                id="resumeFile"
+                accept=".pdf,application/pdf"
+                hidden
+            >
+
+            <button
+                type="button"
+                class="btn primary-btn"
+                onclick="document.getElementById('resumeFile').click()"
+            >
+                <i class="bi bi-folder2-open me-2"></i>
+                Choose Resume
+            </button>
+
+            <div id="selectedFile"></div>
+
+            <div class="mt-3">
+                <a
+                    href="{{ url_for('auth.login') }}"
+                    class="text-decoration-none"
+                    style="color:#7568e8;font-weight:700;"
+                >
+                    Login to analyze your resume →
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= CTA ================= -->
+
+<section class="section">
+
+    <div class="container">
+
+        <div class="cta">
+
+            <div class="row align-items-center">
+
+                <div class="col-lg-8">
+
+                    <h2>
+                        Build a resume that matches your target role.
+                    </h2>
+
+                    <p class="mt-3 mb-0">
+                        Analyze your resume, understand your gaps and
+                        make data-driven improvements before applying.
+                    </p>
+
+                </div>
+
+                <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+
+                    <a
+                        href="{{ url_for('auth.register') }}"
+                        class="btn"
+                    >
+                        Create Your Account
+                        <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+
+const resumeInput = document.getElementById("resumeFile");
+const uploadBox = document.getElementById("uploadBox");
+const selectedFile = document.getElementById("selectedFile");
+
+
+resumeInput.addEventListener("change", function () {
+
+    if (!this.files.length) {
+        return;
+    }
+
+    const file = this.files[0];
+
+    if (
+        file.type !== "application/pdf" &&
+        !file.name.toLowerCase().endsWith(".pdf")
+    ) {
+
+        selectedFile.innerHTML =
+            '<span class="text-danger">' +
+            '<i class="bi bi-x-circle me-1"></i>' +
+            'Please select a PDF file.' +
+            '</span>';
+
+        this.value = "";
+
+        return;
+    }
+
+    selectedFile.innerHTML =
+        '<span>' +
+        '<i class="bi bi-check-circle me-1"></i>' +
+        file.name +
+        '</span>';
+
+});
+
+
+["dragenter", "dragover"].forEach(eventName => {
+
+    uploadBox.addEventListener(eventName, event => {
+
+        event.preventDefault();
+
+        uploadBox.classList.add("dragging");
+
+    });
+
+});
+
+
+["dragleave", "drop"].forEach(eventName => {
+
+    uploadBox.addEventListener(eventName, event => {
+
+        event.preventDefault();
+
+        uploadBox.classList.remove("dragging");
+
+    });
+
+});
+
+
+uploadBox.addEventListener("drop", event => {
+
+    const files = event.dataTransfer.files;
+
+    if (!files.length) {
+        return;
+    }
+
+    const file = files[0];
+
+    if (!file.name.toLowerCase().endsWith(".pdf")) {
+
+        selectedFile.innerHTML =
+            '<span class="text-danger">' +
+            'Please drop a PDF file.' +
+            '</span>';
+
+        return;
+    }
+
+    resumeInput.files = files;
+
+    selectedFile.innerHTML =
+        '<span>' +
+        '<i class="bi bi-check-circle me-1"></i>' +
+        file.name +
+        '</span>';
+
+});
+
+
+</script>
+{% endblock %}
